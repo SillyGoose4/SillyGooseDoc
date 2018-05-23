@@ -1,0 +1,57 @@
+############
+    Silly Goose Database Design
+############
+
+##
+create database SillyGoose default charset=utf8;
+
+
+##  1. tUser table
+CREATE TABLE `SillyGoose`.`tUser`(
+    `userId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '用户id，自增',
+    `userName` VARCHAR(20) NOT NULL COMMENT '用户姓名',
+    `userPhone` CHAR(11) NOT NULL COMMENT '用户手机号',
+    `userPasswd` CHAR(32) NOT NULL COMMENT '用户密码，md5加密'
+);
+
+## 2. tGoose
+CREATE TABLE `SillyGoose`.`tGoose`(
+    `userId` INT NOT NULL AUTO_INCREMENT COMMENT '用户id，外键',
+    `gooseENY` INT NOT NULL DEFAULT 0 COMMENT '鹅民币',
+    `gooseSun` INT NOT NULL DEFAULT 0 COMMENT '已收集阳光',
+    `gooseRain` INT NOT NULL DEFAULT 0 COMMENT '已收集雨',
+    `gooseWind` INT NOT NULL DEFAULT 0 COMMENT '已收集风',
+    `gooseCloud` INT NOT NULL DEFAULT 0 COMMENT '已收集云',
+    `gooseDevil` INT NOT NULL DEFAULT 0 COMMENT '已收集恶',
+    `gooseStar` INT NOT NULL DEFAULT 0 COMMENT '已收集星星',
+    FOREIGN KEY (userId) REFERENCES tUser(userId)
+);
+
+## 3. tCollectTime
+CREATE TABLE `SillyGoose`.`tCollectTime`(
+    `userId` INT NOT NULL AUTO_INCREMENT COMMENT '用户id，外键',
+    `gooseSunT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Sun上次收集时间',
+    `gooseWindT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Wind上次收集时间',
+    `gooseRainT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Rain上次收集时间',
+    `gooseCloudT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Cloud上次收集时间',
+    `gooseDevilT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Devil上次收集时间',
+    `gooseStarT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Star上次收集时间',
+    FOREIGN KEY(`userId`) REFERENCES tUser(userId)
+);
+
+## 4. tPic
+CREATE TABLE tPic(
+    `picId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '照片id',
+    `picBelong` VARCHAR(20) NOT NULL COMMENT '照片归属地',
+    `picLabel` CHAR(2) NOT NULL DEFAULT 'E' COMMENT '照片层级',
+    `picUrl` CHAR(140) NOT NULL COMMENT '照片url',
+    `picDescribe` VARCHAR(140) DEFAULT '(无)' COMMENT '照片描述'
+);
+
+## 4. tAlbum
+CREATE TABLE tAlbum(
+    `userId` INT NOT NULL COMMENT '用户id，外键',
+    `picId` INT NOT NULL COMMENT '照片id,外键',
+    FOREIGN KEY(`userId`) REFERENCES tUser(userId),
+    FOREIGN KEY(`picId`) REFERENCES tPic(picId)
+);
